@@ -1,6 +1,6 @@
     <?php
 
-    include_once ('./template/header.html');
+    include_once('./template/header.php');
 
     //load navbar
     include_once('./template/navbar.php');
@@ -12,15 +12,10 @@
             <div class="col-md-12">
                 <?php
                 $login = false;
-
                 if($login){
+                    echo "Welcome to the management system";
 
                 }else{
-                    ?>
-                    <div class="alert alert-warning text-center" role="alert">
-                        Please login to continue
-                    </div>
-                    <?php
                     include_once ('./template/loginForm.php');
                 }
 
