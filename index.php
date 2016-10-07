@@ -11,8 +11,7 @@
         <div class="row">
             <div class="col-md-12">
                 <?php
-                $login = false;
-                if($login){
+                if(loginStatus()){
                     echo "Welcome to the management system";
 
                 }else{

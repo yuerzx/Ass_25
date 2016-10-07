@@ -13,16 +13,16 @@ class dbConn
     function __construct($sql)
     {
         // Add a little source of safety in case of forgetting something
-        $this->_query = mysqli_real_escape_string($sql);
+        $this->_query = $sql;
         $this->setParams();
         $this->connDB();
     }
 
     public function setParams()
     {
-        $this->_username = 's99999999';
+        $this->_username = 's25909436';
         $this->_password = 'monash00';
-        $this->_db = 'FIT2076';
+        $this->_db = 'llama.its.monash.edu.au/FIT2076';
     }
 
     public function connDB()

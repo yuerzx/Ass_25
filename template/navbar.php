@@ -18,9 +18,18 @@
                 <li><a href="property.php">Property</a></li>
                 <li><a href="client.php">Client</a></li>
                 <li><a href="Type.php">Type</a></li>
-                <?php if(true){
+                <?php if(loginStatus()){
                 ?>
-                    <li><a href="#"><span class="glyphicon glyphicon-user" aria-hidden="true">Yuerzx</span></a></li>
+                    <li><a href="index.php"><span class="glyphicon glyphicon-user" aria-hidden="true">
+                                <?= htmlspecialchars(ucwords($_SESSION['userName'])); ?>
+                            </span></a></li>
+                    <li>
+                        <a href="logout.php">
+                            <span class="glyphicon glyphicon-off" aria-hidden="false">
+                                LogOut
+                            </span>
+                        </a>
+                    </li>
                 <?php
                 }
                 ?>

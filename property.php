@@ -3,6 +3,9 @@
 
     //load navbar
     include_once('./template/navbar.php');
+
+    include ('./class/dbConn.php');
+    $dataClass = new dbConn('a');
 ?>
 <div class="row">
     <div class="col-md-12 text-center">

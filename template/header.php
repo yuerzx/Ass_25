@@ -1,12 +1,8 @@
 <?php
 
-include './class/userClass.php';
-global $userClass;
-$userClass = new userClass();
+include './functions.php';
 
-$loginStatus = $userClass->userLoginCheck();
-
-var_dump($loginStatus);
+var_dump(loginStatus());
 ?>
 
 
