@@ -12,8 +12,9 @@
             <div class="col-md-12">
                 <?php
                 if(loginStatus()){
-                    echo "Welcome to the management system";
-
+                    echo "<div class='text-center'>";
+                    echo "<h1>Welcome to the management system</h1>";
+                    echo "</div>";
                 }else{
                     include_once ('./template/loginForm.php');
                 }

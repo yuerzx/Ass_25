@@ -17,7 +17,7 @@
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="property.php">Property</a></li>
                 <li><a href="client.php">Client</a></li>
-                <li><a href="Type.php">Type</a></li>
+                <li><a href="type.php">Type</a></li>
                 <?php if(loginStatus()){
                 ?>
                     <li><a href="index.php"><span class="glyphicon glyphicon-user" aria-hidden="true">

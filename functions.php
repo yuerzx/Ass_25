@@ -1,5 +1,7 @@
 <?php
 
+require ('./class/dbConn.php');
+
 // place global functions here
 
 define("MONASH_DIR", "ldap.monash.edu.au");
@@ -8,9 +10,12 @@ define("MONASH_FILTER","o=Monash University, c=au");
 //startup global seesion
 session_start();
 
+//connect to the database
+global $dataClass;
+$dataClass = new dbConn();
+
 function loginStatus(){
     if(isset($_SESSION['userName']) && !empty($_SESSION['userName'])){
-        echo "<span style='color: red'>success login</span>";
         $LDAPresult = 1;
     }elseif(!empty($_POST["uname"]) && !empty($_POST["upassword"])){
         $LDAPconn=@ldap_connect(MONASH_DIR);
@@ -44,12 +49,7 @@ function loginStatus(){
     }
 
     //Delcare it in case of the warning
-    $requestFile = 'index.php';
-    if(!empty($_SERVER['REQUEST_URI'])){
-        $uriString = explode('/', $_SERVER['REQUEST_URI']);
-        $requestFile = $uriString[sizeof($uriString) - 1];
-    }
-
+    $requestFile = currentFileName()?:'index.php';
 
     if(!$LDAPresult && $requestFile !== 'index.php' ){
         // if login failed, we need to forward to front page
@@ -58,4 +58,12 @@ function loginStatus(){
     return $LDAPresult;
 }
 
+function currentFileName(){
+    $requestFile = false;
+    if(!empty($_SERVER['REQUEST_URI'])){
+        $uriString = explode('/', $_SERVER['REQUEST_URI']);
+        $requestFile = $uriString[sizeof($uriString) - 1];
+    }
+    return $requestFile;
+}
 

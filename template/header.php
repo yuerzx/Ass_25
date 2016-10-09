@@ -2,7 +2,6 @@
 
 include './functions.php';
 
-var_dump(loginStatus());
 ?>
 
 
