@@ -130,21 +130,33 @@ function editClient($id)
         global $dataClass;
 
         $sql = "UPDATE client SET 
+                CLIENT_FAMILYNAME = :pp_familyname,
+                CLIENT_GIVENNAME = :pp_givenname,
+                CLIENT_EMAIL = :pp_email,
+                CLIENT_MOBILE = :pp_mobile,
+                CLIENT_MAILINGLIST = :pp_mailinglist,
                 client_street = :pp_street, 
                 client_suburb = :pp_suburb,
                 client_state = :pp_state,
-                client_pc = :pp_pc,
-                client_type = :pp_type
+                client_pc = :pp_pc
                 WHERE client_id = :pp_id
                 ";
 
         $dataClass->setQuery($sql);
+        $dataClass->bind(':pp_familyname', $_POST['client_familyname'], 50);
+        $dataClass->bind(':pp_givenname', $_POST['client_givenname'], 100);
         $dataClass->bind(':pp_street', $_POST['client_street'], 100);
         $dataClass->bind(':pp_suburb', $_POST['client_suburb'], 50);
         $dataClass->bind(':pp_state', $_POST['client_state'], 5);
         $dataClass->bind(':pp_pc', $_POST['client_pc'], 6);
-        $dataClass->bind(':pp_type', $_POST['type'], 100);
+        $dataClass->bind(':pp_email', $_POST['client_email'], 50);
+        $dataClass->bind(':pp_mobile', $_POST['client_mobile'], 50);
         $dataClass->bind(':pp_id', $id, 30);
+        if (!isset($_POST['client_mailinglist'])) {
+            $dataClass->bind(':pp_mailinglist', 0, 1);
+        } else {
+            $dataClass->bind(':pp_mailinglist', 1, 1);
+        }
         $res = $dataClass->getResults();
         if ($res) {
             ?>
@@ -193,7 +205,7 @@ function editClient($id)
                             class="form-control"
                             name="client_<?= trim($key) ?>"
                             maxlength="<?= $value ?>>"
-                            value="<?= $res[0][$upperKey] ?>"
+                            value="<?= trim($res[0][$upperKey]) ?>"
                             required>
                     </div>
 

@@ -181,27 +181,32 @@ function editProperty($id)
                 <div class="form-group">
                     <label for="property_id">Property ID</label>
                     <input disabled type="text" class="form-control" name="property_id" id="property_id"
-                           value="<?= $res[0]['PROPERTY_ID'] ?>">
+                           value="<?= $res[0]['PROPERTY_ID'] ?>"
+                    required>
                 </div>
                 <div class="form-group">
                     <label for="property_street">Property Street</label>
                     <input type="text" class="form-control" name="property_street" maxlength="100"
-                           value="<?= $res[0]['PROPERTY_STREET'] ?>">
+                           value="<?= trim($res[0]['PROPERTY_STREET']) ?>"
+                    required>
                 </div>
                 <div class="form-group">
                     <label for="property_suburb">Property Suburb</label>
                     <input type="text" class="form-control" name="property_suburb" maxlength="50"
-                           value="<?= $res[0]['PROPERTY_SUBURB'] ?>">
+                           value="<?= trim($res[0]['PROPERTY_SUBURB']) ?>"
+                    required>
                 </div>
                 <div class="form-group">
                     <label for="property_state">Property State</label>
                     <input type="text" class="form-control" name="property_state" maxlength="5"
-                           value="<?= $res[0]['PROPERTY_STATE'] ?>">
+                           value="<?= trim($res[0]['PROPERTY_STATE']) ?>"
+                    required>
                 </div>
                 <div class="form-group">
                     <label for="property_pc">Property Post Code</label>
                     <input type="number" class="form-control" name="property_pc" maxlength="6"
-                           value="<?= $res[0]['PROPERTY_PC'] ?>">
+                           value="<?= trim($res[0]['PROPERTY_PC']) ?>"
+                    required>
                 </div>
                 <div class="form-group">
                     <?php global $dataClass;

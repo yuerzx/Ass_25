@@ -87,9 +87,9 @@ class dbConn
             echo '<select class="form-control" name="'.$tableName.'">';
             foreach ($results as $res){
                 if($selectValue == $res[$id]){
-                    echo '<option value="'.$res[$id].'" selected>'.ucwords($res[$name]).'</option>';
+                    echo '<option value="'.$res[$id].'" selected>'.ucwords(trim($res[$name])).'</option>';
                 }else{
-                    echo '<option value="'.$res[$id].'">'.ucwords($res[$name]).'</option>';
+                    echo '<option value="'.$res[$id].'">'.ucwords(trim($res[$name])).'</option>';
                 }
             }
             echo '</select>';
