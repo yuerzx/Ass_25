@@ -133,7 +133,15 @@ function editProperty($id)
         // prepare the Query for adding the property
         //var_dump($_POST);
 
-
+        if(isset($_FILES['p_photo']['tmp_name'])){
+            $upfile = "property_images/".$_FILES['p_photo']['name'];
+            if(!move_uploaded_file($_FILES['p_photo']['tmp_name'], $upfile)){
+                echo "Not Sucess";
+            }else{
+                echo "Success";
+                var_dump($_FILES['p_photo']);
+            }
+        }
 
 
 
