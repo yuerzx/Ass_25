@@ -76,6 +76,8 @@ class dbConn
         oci_close($this->_conn);
     }
 
+
+
     public function generateOptionList($tableName, $selectValue = 2){
         $sql = "SELECT * FROM ".$tableName;
         $id = strtoupper($tableName)."_ID";

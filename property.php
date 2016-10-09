@@ -50,41 +50,43 @@ if (isset($_GET['action']) && !empty($_GET['action'])) {
     viewPropertyList();
 }
 
-function delConfirm($id){
+function delConfirm($id)
+{
     global $dataClass;
-    $sql = "DELETE FROM property WHERE property_id = ".$id;
+    $sql = "DELETE FROM property WHERE property_id = " . $id;
     $dataClass->setQuery($sql);
     $res = $dataClass->getResults();
-    if($res){
+    if ($res) {
         ?>
         <div class="bg-success text-center">
             <h2>Record success removed!</h2>
             <a href="property.php" class="btn btn-default">Back to List</a>
         </div>
         <?php
-    }else{
-      ?>
-      <div class="bg-warning text-center">
-          <h2>Record Failed to delete!!</h2>
-          <a href="property.php" class="btn btn-default">Back to List</a>
-      </div>
+    } else {
+        ?>
+        <div class="bg-warning text-center">
+            <h2>Record Failed to delete!!</h2>
+            <a href="property.php" class="btn btn-default">Back to List</a>
+        </div>
         <?php
     }
 }
 
-function delProperty($id){
+function delProperty($id)
+{
     global $dataClass;
-    $sql = "SELECT * FROM property WHERE property_id = ".$id;
+    $sql = "SELECT * FROM property WHERE property_id = " . $id;
     $dataClass->setQuery($sql);
     $res = $dataClass->getResults('ARRAY');
-    if(sizeof($res) == 1){
+    if (sizeof($res) == 1) {
         ?>
-            <div class="alert-warning text-center">
-                <h3>You Sure You Want to Delete</h3>
-                <h5><?= $res[0]['PROPERTY_STREET'].$res[0]['PROPERTY_SUBURB'] ?></h5>
-                <a href="?action=confirmDel&id=<?= $id ?>" class="btn btn-danger">Confirm</a>
-                <a href="property.php" class="btn btn-default">Cancel</a>
-            </div>
+        <div class="alert-warning text-center">
+            <h3>You Sure You Want to Delete</h3>
+            <h5><?= $res[0]['PROPERTY_STREET'] . $res[0]['PROPERTY_SUBURB'] ?></h5>
+            <a href="?action=confirmDel&id=<?= $id ?>" class="btn btn-danger">Confirm</a>
+            <a href="property.php" class="btn btn-default">Cancel</a>
+        </div>
         <?php
     }
 
@@ -133,77 +135,39 @@ function editProperty($id)
         // prepare the Query for adding the property
         //var_dump($_POST);
 
-        if(isset($_FILES['p_photo']['tmp_name'])){
+        if (isset($_FILES['p_photo']['tmp_name']) && !empty($_FILES['p_photo']['tmp_name'])) {
             // we handle image first before we insert any data
-
             $type = $_FILES['p_photo']['type'];
-            if($type != "image/png" || $type != "image/jpeg"){
+            if ($type != "image/png" || $type != "image/jpeg") {
 
                 // if the file types are right, then we can start to process
                 // in case of the duplex file problem, we will rename the file
                 $salt = rand(1, 999999);
                 $ext = pathinfo($_FILES['p_photo']['name'], PATHINFO_EXTENSION);
-                $uniqueName = md5($_FILES['p_photo']['name'].$salt);
-                $uniqueName = substr($uniqueName, -15).'.'.$ext;
-                $upfile = UPLOAD_FOLDER.$uniqueName;
-                if(!move_uploaded_file($_FILES['p_photo']['tmp_name'], $upfile)){
+                $uniqueName = md5($_FILES['p_photo']['name'] . $salt);
+                $uniqueName = substr($uniqueName, -20) . '.' . $ext;
+                $upfile = UPLOAD_FOLDER . $uniqueName;
+                if (!move_uploaded_file($_FILES['p_photo']['tmp_name'], $upfile)) {
                     echo "<h2>The file has been failed to upload, please try again</h2>";
                     echo "<a href=\"javascript:history.go(-1)\">GO BACK</a>";
-                }else{
-                    if(insertPropertyImageRecord($id, $uniqueName)){
+                } else {
+                    if (insertPropertyImageRecord($id, $uniqueName)) {
                         // success insert image
                         updatePropertyInfoRecord($id);
-                    }else{
+                    } else {
                         errorPage();
                     };
                 }
 
-            }else{
-
-                echo "File Type Error! Please try again";
-                echo "<br><a href=\"javascript:history.go(-1)\">GO BACK</a>";
-
+            } else {
+                errorPage();
             }
-
-
+        } else {
+            //if no file uploaded, we can just update the record
+            updatePropertyInfoRecord($id);
         }
 
 
-
-//        global $dataClass;
-//
-//        $sql = "UPDATE property SET
-//                property_street = :pp_street,
-//                property_suburb = :pp_suburb,
-//                property_state = :pp_state,
-//                property_pc = :pp_pc,
-//                property_type = :pp_type
-//                WHERE property_id = :pp_id
-//                ";
-//
-//        $dataClass->setQuery($sql);
-//        $dataClass->bind(':pp_street', $_POST['property_street'], 100);
-//        $dataClass->bind(':pp_suburb', $_POST['property_suburb'], 50);
-//        $dataClass->bind(':pp_state', $_POST['property_state'], 5);
-//        $dataClass->bind(':pp_pc', $_POST['property_pc'], 6);
-//        $dataClass->bind(':pp_type', $_POST['type'], 100);
-//        $dataClass->bind(':pp_id', $id, 30);
-//        $res = $dataClass->getResults();
-//        if ($res) {
-//           ?>
-<!--            <div class="bg-success text-center">-->
-<!--                <h2>Record success updated!</h2>-->
-<!--                <a href="property.php" class="btn btn-default">Back to List</a>-->
-<!--            </div>-->
-<!--            --><?php
-//        } else {
-//            ?>
-<!--            <div class="bg-warning text-center">-->
-<!--                <h2>Record Failed to updated!!</h2>-->
-<!--                <a href="property.php" class="btn btn-default">Back to List</a>-->
-<!--            </div>-->
-<!--            --><?php
-//        }
     } else {
 
         global $dataClass;
@@ -222,31 +186,31 @@ function editProperty($id)
                     <label for="property_id">Property ID</label>
                     <input disabled type="text" class="form-control" name="property_id" id="property_id"
                            value="<?= $res[0]['PROPERTY_ID'] ?>"
-                    required>
+                           required>
                 </div>
                 <div class="form-group">
                     <label for="property_street">Property Street</label>
                     <input type="text" class="form-control" name="property_street" maxlength="100"
                            value="<?= trim($res[0]['PROPERTY_STREET']) ?>"
-                    required>
+                           required>
                 </div>
                 <div class="form-group">
                     <label for="property_suburb">Property Suburb</label>
                     <input type="text" class="form-control" name="property_suburb" maxlength="50"
                            value="<?= trim($res[0]['PROPERTY_SUBURB']) ?>"
-                    required>
+                           required>
                 </div>
                 <div class="form-group">
                     <label for="property_state">Property State</label>
                     <input type="text" class="form-control" name="property_state" maxlength="5"
                            value="<?= trim($res[0]['PROPERTY_STATE']) ?>"
-                    required>
+                           required>
                 </div>
                 <div class="form-group">
                     <label for="property_pc">Property Post Code</label>
                     <input type="number" class="form-control" name="property_pc" maxlength="6"
                            value="<?= trim($res[0]['PROPERTY_PC']) ?>"
-                    required>
+                           required>
                 </div>
                 <div class="form-group">
                     <?php global $dataClass;
@@ -261,7 +225,37 @@ function editProperty($id)
                 <a href="property.php" class="btn btn-default">Cancel</a>
             </form>
 
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <td>Image ID</td>
+                            <td>Image</td>
+                            <td>Action</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php
+                        $listing = listingImages($id);
+                        foreach ($listing as $item) {
+                            foreach ($item as $key=>$value){
+                                if($key == 'IMAGE_ID'){
+                                    echo "<tr><td>".trim($value)."</td>";
+                                }elseif ($key == 'IMAGE_NAME'){
+                                    echo "<td><img src='./".UPLOAD_FOLDER.trim($value)."' style='max-width:200px;'></td>";
+                                    echo "<td>Del</td></tr>";
+                                }
+                            }
+                        }
+                        ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <?php
+
         else:
             echo "Wrong ID, please check and try again";
         endif; // end of size check
@@ -336,7 +330,8 @@ function addProperty()
     } // end of if condition
 }
 
-function updatePropertyInfoRecord($id){
+function updatePropertyInfoRecord($id)
+{
     global $dataClass;
 
     $sql = "UPDATE property SET 
@@ -373,7 +368,8 @@ function updatePropertyInfoRecord($id){
     }
 }
 
-function insertPropertyImageRecord($property_id, $name){
+function insertPropertyImageRecord($property_id, $name)
+{
     global $dataClass;
     $sql = "INSERT INTO listing_image (image_id, property_prop_id, image_name) 
             VALUES (Listing_image_auto_incr.nextval, :pp_id, :pp_name )";
@@ -381,24 +377,33 @@ function insertPropertyImageRecord($property_id, $name){
     $dataClass->bind(':pp_id', $property_id, 30);
     $dataClass->bind(':pp_name', $name, 40);
     $res = $dataClass->getResults();
-    if($res){
+    if ($res) {
         return true;
-    }else{
+    } else {
         return false;
     }
 }
 
-function deletePropertyImageRecord($image_id){
+function deletePropertyImageRecord($image_id)
+{
     global $dataClass;
     $sql = "DELETE FROM listing_image WHERE image_id = :pp_id";
     $dataClass->setQuery($sql);
-    $dataClass->bind(':pp_id',$image_id, 30);
+    $dataClass->bind(':pp_id', $image_id, 30);
     $res = $dataClass->getResults();
-    if($res){
+    if ($res) {
         return true;
-    }else{
+    } else {
         return false;
     }
+}
+
+function listingImages($property_id)
+{
+    global $dataClass;
+    $sql = "SELECT listing_image.IMAGE_ID, listing_image.IMAGE_NAME FROM LISTING_IMAGE WHERE property_prop_id = " . $property_id;
+    $dataClass->setQuery($sql);
+    return $dataClass->getResults('ARRAY');
 }
 
 include_once('./template/footer.php'); ?>
