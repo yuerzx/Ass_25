@@ -137,23 +137,31 @@ function editProperty($id)
             // we handle image first before we insert any data
 
             $type = $_FILES['p_photo']['type'];
-            if($type !== "image/png" ||  $type !== "image/jpeg"){
-                echo "File Type Error! Please try again";
-                echo "<a href=\"javascript:history.go(-1)\">GO BACK</a>";
-            }else{
+            if($type != "image/png" || $type != "image/jpeg"){
 
                 // if the file types are right, then we can start to process
                 // in case of the duplex file problem, we will rename the file
                 $salt = rand(1, 999999);
+                $ext = pathinfo($_FILES['p_photo']['name'], PATHINFO_EXTENSION);
                 $uniqueName = md5($_FILES['p_photo']['name'].$salt);
-                $upfile = "property_images/".$uniqueName;
+                $uniqueName = substr($uniqueName, -15).'.'.$ext;
+                $upfile = UPLOAD_FOLDER.$uniqueName;
                 if(!move_uploaded_file($_FILES['p_photo']['tmp_name'], $upfile)){
                     echo "<h2>The file has been failed to upload, please try again</h2>";
                     echo "<a href=\"javascript:history.go(-1)\">GO BACK</a>";
                 }else{
-                    var_dump($_FILES['p_photo']);
-
+                    if(insertPropertyImageRecord($id, $uniqueName)){
+                        // success insert image
+                        updatePropertyInfoRecord($id);
+                    }else{
+                        errorPage();
+                    };
                 }
+
+            }else{
+
+                echo "File Type Error! Please try again";
+                echo "<br><a href=\"javascript:history.go(-1)\">GO BACK</a>";
 
             }
 
@@ -162,40 +170,40 @@ function editProperty($id)
 
 
 
-        global $dataClass;
-
-        $sql = "UPDATE property SET 
-                property_street = :pp_street, 
-                property_suburb = :pp_suburb,
-                property_state = :pp_state,
-                property_pc = :pp_pc,
-                property_type = :pp_type
-                WHERE property_id = :pp_id
-                ";
-
-        $dataClass->setQuery($sql);
-        $dataClass->bind(':pp_street', $_POST['property_street'], 100);
-        $dataClass->bind(':pp_suburb', $_POST['property_suburb'], 50);
-        $dataClass->bind(':pp_state', $_POST['property_state'], 5);
-        $dataClass->bind(':pp_pc', $_POST['property_pc'], 6);
-        $dataClass->bind(':pp_type', $_POST['type'], 100);
-        $dataClass->bind(':pp_id', $id, 30);
-        $res = $dataClass->getResults();
-        if ($res) {
-           ?>
-            <div class="bg-success text-center">
-                <h2>Record success updated!</h2>
-                <a href="property.php" class="btn btn-default">Back to List</a>
-            </div>
-            <?php
-        } else {
-            ?>
-            <div class="bg-warning text-center">
-                <h2>Record Failed to updated!!</h2>
-                <a href="property.php" class="btn btn-default">Back to List</a>
-            </div>
-            <?php
-        }
+//        global $dataClass;
+//
+//        $sql = "UPDATE property SET
+//                property_street = :pp_street,
+//                property_suburb = :pp_suburb,
+//                property_state = :pp_state,
+//                property_pc = :pp_pc,
+//                property_type = :pp_type
+//                WHERE property_id = :pp_id
+//                ";
+//
+//        $dataClass->setQuery($sql);
+//        $dataClass->bind(':pp_street', $_POST['property_street'], 100);
+//        $dataClass->bind(':pp_suburb', $_POST['property_suburb'], 50);
+//        $dataClass->bind(':pp_state', $_POST['property_state'], 5);
+//        $dataClass->bind(':pp_pc', $_POST['property_pc'], 6);
+//        $dataClass->bind(':pp_type', $_POST['type'], 100);
+//        $dataClass->bind(':pp_id', $id, 30);
+//        $res = $dataClass->getResults();
+//        if ($res) {
+//           ?>
+<!--            <div class="bg-success text-center">-->
+<!--                <h2>Record success updated!</h2>-->
+<!--                <a href="property.php" class="btn btn-default">Back to List</a>-->
+<!--            </div>-->
+<!--            --><?php
+//        } else {
+//            ?>
+<!--            <div class="bg-warning text-center">-->
+<!--                <h2>Record Failed to updated!!</h2>-->
+<!--                <a href="property.php" class="btn btn-default">Back to List</a>-->
+<!--            </div>-->
+<!--            --><?php
+//        }
     } else {
 
         global $dataClass;
@@ -365,12 +373,12 @@ function updatePropertyInfoRecord($id){
     }
 }
 
-function insertPropertyImageRecord($id, $name){
+function insertPropertyImageRecord($property_id, $name){
     global $dataClass;
     $sql = "INSERT INTO listing_image (image_id, property_prop_id, image_name) 
             VALUES (Listing_image_auto_incr.nextval, :pp_id, :pp_name )";
     $dataClass->setQuery($sql);
-    $dataClass->bind(':pp_id',$id, 30);
+    $dataClass->bind(':pp_id', $property_id, 30);
     $dataClass->bind(':pp_name', $name, 40);
     $res = $dataClass->getResults();
     if($res){

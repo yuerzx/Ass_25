@@ -6,7 +6,7 @@ require ('./class/dbConn.php');
 
 define("MONASH_DIR", "ldap.monash.edu.au");
 define("MONASH_FILTER","o=Monash University, c=au");
-
+define("UPLOAD_FOLDER", "property_images/");
 
 //startup global seesion
 session_start();
@@ -68,3 +68,7 @@ function currentFileName(){
     return $requestFile;
 }
 
+function errorPage(){
+    echo "<h2>Something goes wrong, please try again</h2>";
+    echo "<a href=\"javascript:history.go(-1)\">GO BACK</a>";
+}
