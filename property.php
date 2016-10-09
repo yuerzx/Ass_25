@@ -133,6 +133,10 @@ function editProperty($id)
         // prepare the Query for adding the property
         //var_dump($_POST);
 
+
+
+
+
         global $dataClass;
 
         $sql = "UPDATE property SET 
@@ -177,7 +181,10 @@ function editProperty($id)
         IF (sizeof($res) == 1):
             ?>
 
-            <form method="post" action="<?= $_SERVER["PHP_SELF"] ?>?action=edit&id=<?= $id ?>">
+            <form method="post"
+                  action="<?= $_SERVER["PHP_SELF"] ?>?action=edit&id=<?= $id ?>"
+                  enctype="multipart/form-data"
+            >
                 <div class="form-group">
                     <label for="property_id">Property ID</label>
                     <input disabled type="text" class="form-control" name="property_id" id="property_id"
@@ -214,8 +221,8 @@ function editProperty($id)
                 </div>
                 <div class="form-group">
                     <label for="property_photo">Photo Upload</label>
-                    <input type="file" id="property_photo">
-                    <p class="help-block">Only jpg, png,bmp are allowed!</p>
+                    <input type="file" name="p_photo">
+                    <p class="help-block">Only jpg or png are allowed!</p>
                 </div>
                 <button type="submit" class="btn btn-default">Submit</button>
                 <a href="property.php" class="btn btn-default">Cancel</a>
