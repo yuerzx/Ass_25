@@ -48,13 +48,13 @@ class dbConn
                 }
                 return $this->_array;
             }else{
-                return true;
+                return $this->result;
             }
         }
 
     }
 
-    public function setParams()
+    private function setParams()
     {
         $this->_username = 's25909436';
         $this->_password = 'monash00';
@@ -74,6 +74,13 @@ class dbConn
             oci_free_statement($this->result);
         }
         oci_close($this->_conn);
+    }
+
+
+    public function freeResults(){
+        if(isset($this->result) && !empty($this->result)){
+            $this->result = '';
+        }
     }
 
 
@@ -99,6 +106,30 @@ class dbConn
             echo "Please enter data to start";
         }
 
+        $this->freeResults();
+    }
+
+    public function generateChoiceList($tableName, $nonRepeat = true){
+
+        $id = strtoupper($tableName)."_ID";
+        $name = strtoupper($tableName)."_NAME";
+        $sql = "SELECT ".$name." FROM ".$tableName;
+        if($nonRepeat){
+            $sql = $sql.' GROUP BY '.$name;
+        }
+        $this->setQuery($sql);
+        $results = $this->getResults('ARRAY');
+        if(sizeof($results)){
+            foreach ($results as $res){
+                echo '<div class="checkbox" name="'.$tableName.'">';
+                echo '<label><input type = "checkbox" name = "s_feature" value = "'.strtolower(trim($res[$name])).'">'.ucwords(trim($res[$name])).'</label>';
+                echo '</div>';
+            }
+        }else{
+            echo "Please enter data to start";
+        }
+
+        $this->freeResults();
     }
 
     // $idType is the primary key in database for us to find out the record
